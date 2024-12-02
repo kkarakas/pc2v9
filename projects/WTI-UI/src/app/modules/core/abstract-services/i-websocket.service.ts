@@ -15,6 +15,7 @@ export abstract class IWebsocketService {
   abstract stopWebsocket(): void;
 
   incomingMessage(message: WebsocketMessage) {
+	console.log('Incoming Message of ${message.type}',message.type)
     switch (message.type) {
       case 'test':
       case 'judged': {
@@ -24,6 +25,11 @@ export abstract class IWebsocketService {
       }
       case 'clarification': {
         this._uiHelperService.incomingClarification(message.id);
+        this._contestService.clarificationsUpdated.next();
+        break;
+      }
+      case 'clarification_announcement': {
+        this._uiHelperService.incomingClarificationAnnouncement(message.id);
         this._contestService.clarificationsUpdated.next();
         break;
       }

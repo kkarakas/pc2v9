@@ -17,15 +17,32 @@ public class ClarificationService implements IClarificationEventListener {
 		this.teamId = pId;
 		client = socket;
 	}
-
+	
 	@Override
 	public void clarificationAdded(IClarification arg0) {
-		
+        //This method is used by two (or more?) methods.
+        //Whenever an announcement that this user should receive is made this method is called
+        //Also whenever the team sends a clarification to be answered by the judges.
+	    System.out.println("The question is answered :" +arg0.isAnswered());
+        if ( !arg0.isAnswered()) {  //case when the team sends a clarification to be answered.
+            return;
+        }
+        System.out.println("The clar is being answered JOHN BUCK.---------------------------------------------");
+        String clarId = String.format("%s-%s", arg0.getSiteNumber(),arg0.getNumber());
+        
+        JsonObject builder = Json.createObjectBuilder()
+                .add("type", WebsocketMsgType.CLARIFICATION_ANNOUNCEMENT.name().toLowerCase())
+                .add("id", clarId)
+                .add("teamId", this.teamId)
+                .build();
+        
+        this.client.sendMessage(builder.toString());
 	}
 
 	@Override
 	public void clarificationAnswered(IClarification arg0) {
 		
+	    System.out.println("The clar is being answered Samanway.---------------------------------------------");
 		String clarId = String.format("%s-%s", arg0.getSiteNumber(),arg0.getNumber());
 		
 		JsonObject builder = Json.createObjectBuilder()
