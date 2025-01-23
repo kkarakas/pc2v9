@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { IContestService } from 'src/app/modules/core/abstract-services/i-contest.service';
 import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, delay  } from 'rxjs';
 import { Clarification } from '../../../core/models/clarification';
 import { MatDialog } from '@angular/material/dialog';
 import { NewClarificationComponent } from '../new-clarification/new-clarification.component';
@@ -34,7 +34,9 @@ export class ClarificationsPageComponent implements OnInit, OnDestroy {
     this.loadClars();
 
     this._contestService.clarificationsUpdated
-      .pipe(takeUntil(this._unsubscribe))
+      .pipe(
+	delay(300),
+	takeUntil(this._unsubscribe))
       .subscribe(_ => {
         this.loadClars();
       });
@@ -50,6 +52,7 @@ export class ClarificationsPageComponent implements OnInit, OnDestroy {
       data: {},
       disableClose: true
     });
+
   }
 
   private filterClarifications() {
